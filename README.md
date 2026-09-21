@@ -58,7 +58,9 @@ sample card images to the device.
   override doesn't match the number the form tells you.
 - Checks the issuing country against a banned list. The list and the reason for each country
   can be edited in the app and both are saved.
-- Saves valid cards to local storage and lists them, newest first.
+- Saves valid cards to local storage and lists them, newest first. The list only shows the
+  last four digits; tapping a card opens the full number and everything else stored with it.
+- Cards can be deleted, either by swiping a row or from the detail screen.
 - Won't save the same card twice, no matter how it was formatted.
 - Scans a card with the camera and fills in the number, type, expiry date, and the
   security code if the card prints it on the front.

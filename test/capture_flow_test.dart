@@ -61,6 +61,45 @@ void main() {
     expect(find.textContaining('4574 4874'), findsNothing);
   });
 
+  testWidgets('opens a saved card and shows the full details', (tester) async {
+    await start(tester);
+    await fillForm(tester,
+        number: '4574487405351567', expiry: '1229', cvv: '123', country: 'South Africa');
+    await tester.tap(find.text('Validate and save'));
+    await tester.pumpAndSettle();
+
+    // The list masks the number; the detail screen shows it in full.
+    await tester.tap(find.textContaining('1567'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('4574 4874 0535 1567'), findsOneWidget);
+    expect(find.text('12/29'), findsOneWidget);
+    expect(find.textContaining('South Africa'), findsWidgets);
+
+    // The security code stays hidden until it is asked for.
+    expect(find.text('123'), findsNothing);
+    await tester.tap(find.text('Show'));
+    await tester.pumpAndSettle();
+    expect(find.text('123'), findsOneWidget);
+  });
+
+  testWidgets('deletes a card from the detail screen', (tester) async {
+    await start(tester);
+    await fillForm(tester,
+        number: '4574487405351567', expiry: '1229', cvv: '123', country: 'South Africa');
+    await tester.tap(find.text('Validate and save'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.textContaining('1567'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete this card'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Remove'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('No cards captured yet'), findsOneWidget);
+  });
+
   testWidgets('refuses the same card twice', (tester) async {
     await start(tester);
 

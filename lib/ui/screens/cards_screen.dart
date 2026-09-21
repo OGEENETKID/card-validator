@@ -7,6 +7,7 @@ import '../theme.dart';
 import '../widgets/brand_mark.dart';
 import 'add_card_screen.dart';
 import 'banned_countries_screen.dart';
+import 'card_detail_screen.dart';
 
 class CardsScreen extends StatelessWidget {
   const CardsScreen({super.key});
@@ -40,7 +41,8 @@ class CardsScreen extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
                       child: Text(
                         '${cards.length} card${cards.length == 1 ? '' : 's'} on this device · '
-                        '${state.bannedCountryCodes.length} country rules active',
+                        '${state.bannedCountryCodes.length} country rules active. '
+                        'Tap a card to see its details.',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -92,52 +94,48 @@ class _CardRow extends StatelessWidget {
         padding: const EdgeInsets.only(right: 20),
         child: const Icon(Icons.delete_outline, color: Colors.white),
       ),
-      confirmDismiss: (_) async => await showDialog<bool>(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Remove this card?'),
-              content: Text('${card.brand.label} ending ${card.last4} will be deleted '
-                  'from this device.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Keep'),
+      confirmDismiss: (_) => confirmRemoveCard(context, card),
+      onDismissed: (_) => AppScope.read(context).removeCard(card.id),
+      child: Material(
+        color: AppColors.surface,
+        child: InkWell(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => CardDetailScreen(card: card)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BrandMark(card.brand),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(card.masked, style: AppTheme.pan),
+                      const SizedBox(height: 6),
+                      Text(
+                        '${card.brand.label} · ${country?.flag ?? ''} '
+                        '${Countries.nameOf(card.countryCode)}'
+                        '${card.expiry.isEmpty ? '' : ' · exp ${card.expiry}'}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  style: TextButton.styleFrom(foregroundColor: AppColors.rejected),
-                  child: const Text('Remove'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(_time(card.capturedAt),
+                        style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(height: 4),
+                    const Icon(Icons.chevron_right, size: 20, color: AppColors.muted),
+                  ],
                 ),
               ],
             ),
-          ) ??
-          false,
-      onDismissed: (_) => AppScope.read(context).removeCard(card.id),
-      child: Container(
-        color: AppColors.surface,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BrandMark(card.brand),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(card.masked, style: AppTheme.pan),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${card.brand.label} · ${country?.flag ?? ''} '
-                    '${Countries.nameOf(card.countryCode)}'
-                    '${card.expiry.isEmpty ? '' : ' · exp ${card.expiry}'}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-            Text(_time(card.capturedAt), style: Theme.of(context).textTheme.bodySmall),
-          ],
+          ),
         ),
       ),
     );
