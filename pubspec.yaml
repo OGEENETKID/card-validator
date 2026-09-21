@@ -1,0 +1,33 @@
+name: card_validator
+description: Admin tool for capturing and validating credit card details.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Local storage. Small, first-party, no schema ceremony for a few JSON blobs.
+  shared_preferences: ^2.2.3
+
+  # Camera/gallery access for the card scanner. Avoids pulling in the full
+  # `camera` package plus a custom preview + capture pipeline.
+  image_picker: ^1.1.2
+
+  # On-device OCR for the card scanner. Writing this by hand is not realistic;
+  # everything built on top of the recognised text (candidate extraction,
+  # OCR character repair, brand inference) is ours and is unit tested.
+  google_mlkit_text_recognition: ^0.13.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/config/

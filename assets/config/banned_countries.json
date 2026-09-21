@@ -1,0 +1,14 @@
+{
+  "_comment": "Default banned issuing countries. Shipped with the build, overridable at runtime from the Banned countries screen. In production this asset would be the offline fallback for a feed from the compliance team's sanctions/AML screening provider, not a list maintained by hand in a repo.",
+  "version": 2,
+  "source": "FATF high-risk jurisdictions subject to a call for action, plus jurisdictions under comprehensive financial sanctions.",
+  "reviewed": "2026-05-01",
+  "entries": [
+    { "code": "IR", "reason": "FATF call for action" },
+    { "code": "KP", "reason": "FATF call for action" },
+    { "code": "MM", "reason": "FATF call for action" },
+    { "code": "SY", "reason": "Comprehensive sanctions" },
+    { "code": "CU", "reason": "Comprehensive sanctions" },
+    { "code": "AF", "reason": "Elevated AML risk" }
+  ]
+}
