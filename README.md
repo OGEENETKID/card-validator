@@ -6,7 +6,6 @@ Built as a technical test for The Rank Group.
 ## Running it
 
 ```bash
-flutter create . --project-name card_validator --platforms=android,ios
 flutter pub get
 flutter test
 flutter run
